@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="row align-items-center">
+        <div class="col-lg-12 mx-auto text-center" data-aos="fade-up">
+            <h3 class="mb-3">Регистрация нового пользователя:</h3>
+            <p class="lead mx-auto desc mb-5">
+
+            </p>
+            <p class="text-center">
+
+
+                <form method="POST">
+                  {% csrf_token %}
+                  {{exist}}
+                  <!--
+                  <p><label>Имя (необязательно)</label>
+                    <input id="first_name" name="first_name">
+                  </p>
+
+                  <p><label>Фамилия (необязательно)</label>
+                    <input id="last_name" name="last_name">
+                  </p>
+                   -->
+
+                  <p><label>Имя пользователя (ОБЯЗАТЕЛЬНО)</label>
+                    <input id="login" name="login">
+                  </p>
+
+                  <p><label>Пароль (ОБЯЗАТЕЛЬНО)</label>
+                    <input type="password" id="password" name="password">
+                  </p>
+
+                  <p><label>email (ОБЯЗАТЕЛЬНО)</label>
+                    <input id="email" name="email">
+                  </p>
+
+                  <button onclick="this.form.submit()">Зарегистрироваться</button>
+
+                </form>
+          </p>
+        </div>
+</div>
+
+{% endblock %}

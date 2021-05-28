@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div align="center">
+            <h3>О пользователе</h3>
+                <br>
+                <p><label>Имя пользователя:&nbsp;&nbsp;&nbsp;</label>{{username}}</p>
+                <p><label>Электронная почта пользователя:&nbsp;&nbsp;&nbsp;</label>{{email}}</p>
+                <p><label>Дата регистрации: {{create_on}}</label></p>
+                <p><label>Последний вход: {{last_login}}</label></p>
+                <p>
+                  <button class="btn btn-primary" onclick="window.location.href = '{% url 'logout' %}';">Выйти</button>
+                </p>
+</div>
+
+{% endblock %}

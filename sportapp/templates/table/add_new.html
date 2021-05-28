@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% block content %}
+<div align="center" class="add_new_div_text">
+            <p class="fs-3">Добавить результат:</p>
+
+                <form action="/table/add_new/" method="POST">
+                    {% csrf_token %}
+
+                    <p>{{result_added}}</p>
+
+                    <table align="center" class="add_new_table">
+                        <tr>
+                            <td align="left">Имя пользователя:</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td align="right">{{username}}</td>
+                        </tr>
+                        <tr>
+                            <td align="left">Дата:</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td align="right"><input class="btn btn-light dropdown-toggle" type="date" id="input_date" name="input_date"></td>
+                        </tr>
+                        <tr>
+                            <td align="left">Пульсовая зона:</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td align="right">
+                                <select class="btn btn-light dropdown-toggle" name="select_heart_rate" id="select_heart_rate">
+                                    {%for rate in heart_rates%}
+                                    <option>{{rate}}</option>
+                                    {%endfor%}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left">Параметр:</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td align="right">
+                                <select class="btn btn-light dropdown-toggle" name="select_method" id="select_method">
+                                    {%for method in methods%}
+                                    <option>{{method}}</option>
+                                    {%endfor%}
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left">Результат:</td>
+                            <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td align="right"><input class="form-control" name="input_result" id="input_result"></td>
+                        </tr>
+                    </table>
+                    <p> <br> <button onclick="submit" class="btn btn-primary">Добавить</button></p>
+
+                </form>
+
+            <!-- <a href="#params">Редактировать параметры</a> -->
+      </div>
+<br>
+<div align="center" class="add_new_div_text">
+<p class="fs-3">Редактирование параметров:</p>
+    <div id="params">
+    <table class="add_new_params">
+        <tr>
+            <form action="del_heart_rate" method="POST">
+                {% csrf_token %}
+                <td>Выберите пульсовую зону для удаления</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                    <select class="btn btn-light dropdown-toggle" name="del_heart_rate_select">
+                            {%for rate in heart_rates%}
+                            <option>{{rate}}</option>
+                            {%endfor%}
+                    </select>
+                </td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td><button class="btn btn-warning" onclick="this.form.submit()">Удалить зону</button></td>
+            </form>
+        </tr>
+
+        <tr>
+            <form action="new_heart_rate" method="POST">
+                {% csrf_token %}
+                <td>Добавление новой пульсовой зоны</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td><input class="btn btn-light dropdown-toggle" type="text" name="add_new_heart_rate_input"></td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td><button class="btn btn-success" onclick="this.form.submit()">Добавить зону</button></td>
+            </form>
+        </tr>
+
+        <tr>
+            <form action="del_method" method="POST">
+                {% csrf_token %}
+                <td>Выберите метод тренировок для удаления</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                    <select class="btn btn-light dropdown-toggle" name="del_method_select">
+                        {%for m in methods%}
+                        <option>{{m}}</option>
+                        {%endfor%}
+                    </select>
+                </td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                    <button class="btn btn-warning" onclick="this.form.submit()">Удалить метод</button>
+                </td>
+            </form>
+        </tr>
+
+        <tr>
+            <form action="new_method" method="POST">
+                {% csrf_token %}
+                <td>Добавление нового средства тернировок:</td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td><input class="btn btn-light dropdown-toggle" type="text" name="add_new_method_input"></td>
+                <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td><button class="btn btn-success" onclick="this.form.submit()">Добавить метод</button></td>
+            </form>
+        </tr>
+    </table>
+    </div>
+</div>
+
+{% endblock %}

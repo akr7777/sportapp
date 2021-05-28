@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+
+    <div align="center" class="body_text">
+            {% if form.errors %}
+              <p>Имя пользователя или пароль введены неверно. Поробуйте еще раз.</p>
+            {% endif %}
+
+            {% if next %}
+              {% if user.is_authenticated %}
+                <p>Эту страницу могут просматривать лишь зарегистрированные пользователи.
+                    <br>Для просмотра войдите в свою учетную запись.</p>
+              {% else %}
+                <p>Для просмотра войдите в свою учетную запись.</p>
+              {% endif %}
+            {% endif %}
+
+            <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <table class="add_new_table">
+
+            <tr>
+              <td>{{ form.username.label_tag }}</td>
+              <td>{{ form.username }}</td>
+            </tr>
+
+            <tr>
+              <td>{{ form.password.label_tag }}</td>
+              <td>{{ form.password }}</td>
+            </tr>
+            </table>
+            <br>
+            <input class="btn btn-primary dropdown-toggle" type="submit" value="login" />
+            <input type="hidden" name="next" value="{{ next }}" />
+            </form>
+            <br>
+            <p><!--Ваша имя пользователя:--><a href="{% url 'logout' %}">Выйти</a></p>
+
+            {# Assumes you setup the password_reset view in your URLconf #}
+            <p><a href="{% url 'password_reset' %}">Забыли пароль?</a></p>
+
+            <p><a href="/registration/new/">ЗАРЕГИСТРИРОВАТЬСЯ</a></p>
+
+</div>
+
+{% endblock %}

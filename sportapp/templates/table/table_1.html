@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+<center>
+  <p class="fs-3">Мои результаты:</p>
+
+    <!--Год и месяц-->
+    <form method="POST" style="padding: 10px;">
+        {% csrf_token %}
+        <select class="btn btn-primary dropdown-toggle" align="center" name="select_year_table" id="select_year_table" onchange='this.form.submit()'>
+             {%for y in years%}
+                 {%if y == current_year%}
+                     <option selected>{{y}}</option>
+                 {%else%}
+                     <option>{{y}}</option>
+                 {%endif%}
+             {%endfor%}
+        </select>
+
+        <select class="btn btn-primary dropdown-toggle" align="center" name="select_month_table" id="select_month_table" onchange='this.form.submit()'>
+             {%for m in months%}
+                 {%if m == current_month%}
+                     <option selected>{{m}}</option>
+                 {%else%}
+                     <option>{{m}}</option>
+                 {%endif%}
+             {%endfor%}
+         </select>
+     </form>
+</center>
+
+<!--/Год и месяц-->
+<!--    TABLE     -->
+    <br>
+    <div class="container">
+            <div id="myTable1" class="table table-hover"></div>
+                <script type="text/javascript" charset="UTF-8" src="{% static 't1.js' %}"></script>
+                <form name="theForm" action="/table/edit_table_by_user" method="POST" id="form1">
+                    {% csrf_token %}
+                    <input type="hidden" id="transfer_text_area" readonly cols="100" rows="1">
+                </form>
+    </div>
+    <br>
+
+{% endblock %}

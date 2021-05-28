@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content %}
+    <center><p class="fs-3">План тренировок:</p></center>
+            <!--Год и месяц-->
+    <form method="POST" align="center" style="padding: 10px;">
+            <!-- <form id="table_form"> -->
+                {% csrf_token %}
+
+                        <select class="btn btn-primary dropdown-toggle" align="center" name="select_year_table" id="select_year_table" onchange='this.form.submit()' style="padding-right: 10px;">
+                            {%for y in years%}
+                                {%if y == current_year%}
+                                    <option selected>{{y}}</option>
+                                {%else%}
+                                    <option>{{y}}</option>
+                                {%endif%}
+                            {%endfor%}
+                        </select>
+
+                        <select class="btn btn-primary dropdown-toggle" align="center" name="select_month_table" id="select_month_table" onchange='this.form.submit()' style="padding-left: 10px;">
+                            {%for m in months%}
+                                {%if m == current_month%}
+                                    <option selected>{{m}}</option>
+                                {%else%}
+                                    <option>{{m}}</option>
+                                {%endif%}
+                            {%endfor%}
+                        </select>
+    </form>
+                <!--/Год и месяц-->
+                <!--    TABLE     -->
+                <div class="container">
+            <form id="table_form">
+                {% csrf_token %}
+                <table border="1"  class="table table-hover">
+                    <tr>
+                        <th>N</th>
+                        <th>ЧСС</th>
+                        {% for meth in methods %}
+                            <th>{{meth.method_name}}</th>
+                        {% endfor %}
+                        <th>ИТОГО:</th>
+                        <th>%</th>
+                    </tr>
+
+                    {% for row in context1 %}
+                        <tr>
+                            <td>{{row.count}}</td>
+                            <td>{{row.rate}}</td>
+                            {% for n in row.data %}
+                                <td>{{ n }}</td>
+                            {% endfor %}
+                            <td>{{row.rate_total}}</td>
+                            <td>
+                                <input class="form-control"
+                                       name="input_rate_{{row.rate}}"
+                                       id="input_rate_{{row.rate}}"
+                                       value="{{row.rate_percent}}"
+                                       size="3"
+                                       maxlength="2"
+                                >
+                            </td>
+                        </tr>
+                    {% endfor %}
+
+                    <!-- Предпоследняя строка -->
+
+                        <tr>
+                            <td> </td>
+                            <td>{{bottom_context_1.itogo}}</td>
+                            {% for n in bottom_context_1.data %}
+                                <td>
+                                    {{ n }}
+                                </td>
+                            {% endfor %}
+                            <td>
+                                <input  class="form-control"
+                                        name="input_total_time"
+                                        id="input_total_time"
+                                        value="{{bottom_context_1.total_time}}"
+                                        size="5"
+                                        maxlength="4"
+                                >
+                            </td>
+                            <td>{{bottom_context_1.total_percent}}</td>
+                        </tr>
+
+                    <!-- Последняя строка -->
+                        <tr>
+                            <td> </td>
+                            <td>{{bottom_context_2.itogo}}</td>
+                            {% for n in bottom_context_2.data %}
+                                <td>
+                                    <input class="form-control"
+                                           name="input_meth_{{n.input_name}}"
+                                           id="input_meth_{{n.input_name}}"
+                                           value="{{n.value}}"
+                                           size="3"
+                                           maxlength="2"
+                                    >
+                                </td>
+                            {% endfor %}
+                            <td>{{bottom_context_2.total_time}}</td>
+                            <td></td>
+                        </tr>
+
+                </table>
+                <input id="choosen_year" name="choosen_year" type="hidden">
+                <input id="choosen_month" name="choosen_month" type="hidden">
+                <div align="center" style="padding: 10px;">
+                  <button class="btn btn-primary" onclick="a()">Сохранить</button>
+                </div>
+                <script type="text/javascript">
+                    function a(){
+                        //Берем все элементы и проверяем, чтобы сумма = 100%
+                        var all = document.getElementsByTagName("*");
+                        var rate_percent_total = 0;
+                        var meth_percent_total = 0;
+                        for (var i=0, max=all.length; i < max; i++) {
+                            elem_name = all.item(i).name;
+                            if ((elem_name != null) && (elem_name.slice(0,6)=="input_")) {
+                                //alert(i + ": "+ all.item(i).name);
+                                if (elem_name.slice(6, 11) == "rate_") {
+                                    rate_percent_total = rate_percent_total + Number.parseInt(all.item(i).value);
+                                }
+                                if (elem_name.slice(6, 11) == "meth_") {
+                                    meth_percent_total = meth_percent_total + Number.parseInt(all.item(i).value);
+                                }
+                            }
+                        }
+
+                        //alert("rate_percent_total=" + rate_percent_total + "\nmeth_percent_total=" + meth_percent_total);
+
+                        // Проверяем суммы процентов на равность 100:
+                        // Если все ОК, вызываем метод POST у формы
+                        if (rate_percent_total != 100) alert("Сумма процентов по вертикали должна быть равно 100!");
+                        else {
+                            if (meth_percent_total != 100) alert("Сумма процентов по горизонтали должна быть равно 100!");
+                            else {
+                                val = document.getElementById("input_total_time").value
+                                //alert("table2.html, 147: "+isNaN(val) + "_" + (Number.parseInt(val)<=0));
+                                if (isNaN(val) || Number.parseInt(val)<=0) {
+                                    alert("Общее время должно быть числом и больше нуля");
+                                    }
+                                else {
+                                    //alert("Вызываем метод ПОСТ");
+                                    choosen_year = document.getElementById("select_year_table").value;
+                                    choosen_month = document.getElementById("select_month_table").value;
+                                    //alert("choosen_year=" + choosen_year + ";choosen_month=" + choosen_month);
+                                    document.getElementById("choosen_year").value = choosen_year;
+                                    document.getElementById("choosen_month").value = choosen_month;
+
+                                    document.getElementById("table_form").method = "POST";
+                                    //document.getElementById("table_form").action = "/table/table2/save_percents/";
+                                    document.getElementById("table_form").submit();
+                                    }
+                            }
+                        }
+
+
+                    }
+                </script>
+            </form>
+            </div>
+
+{% endblock %}
