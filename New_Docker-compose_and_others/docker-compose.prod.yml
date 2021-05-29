@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  web:
+    image: akr77/sport3_web
+    # Берем Dockerfile из каталога app
+    #build:
+       #context: ./sportapp
+       #dockerfile: Dockerfile.prod
+    # Запускаем сервер gunicorn
+    command: gunicorn sportapp.wsgi:application --bind 0.0.0.0:8000
+    # Открываем порт 8000 внутри и снаружи
+    #ports:
+    #  - 8000:8000
+    expose:
+      - 8000
+
+    volumes:
+      - static_volume:/home/sportapp/web/static
+      - media_volume:/home/sportapp/web/media
+
+    env_file:
+      - ./env.prod
+    # Дожидаемся запуска контейнера db
+    depends_on:
+      - db
+  db:
+    # Образ и версия базы, которую мы будем использовать
+    image: postgres:12.0-alpine
+    # Внешний том(volume) и место где он будет подключен внутри контейнера
+    volumes:
+      - postgres_volume:/var/lib/postgresql/data/
+    env_file:
+      - ./env.prod.db
+
+  frontend:
+        restart: unless-stopped
+        image: staticfloat/nginx-certbot
+        ports:
+            - 80:80/tcp
+            - 443:443/tcp
+        environment:
+            CERTBOT_EMAIL: owner@company.com
+        volumes:
+          - ./conf.d:/etc/nginx/user.conf.d:ro
+          - letsencrypt:/etc/letsencrypt
+
+volumes:
+  postgres_volume:
+  static_volume:
+  media_volume:
+  letsencrypt:
